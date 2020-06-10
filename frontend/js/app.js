@@ -5,6 +5,7 @@ const screenX = 1280;
 const screenY = 1024;
 // endpoint API
 const API = "http://IP:1717";
+const socket = io.connect(API)
 
 // when moving
 pad.addEventListener("touchmove", (event) => {
@@ -25,16 +26,10 @@ pad.addEventListener("touchmove", (event) => {
 
   console.log(transX, transY);
 
-  fetch(`${API}/move`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ x: transX, y: transY }),
-  }).then((res) => console.log(res));
+  socket.emit('move', { x: transX, y: transY })
 });
 
 // when clicking
 pad.addEventListener("click", () => {
-  fetch(`${API}/click`, { method: "POST" }).then((res) => console.log(res));
+  socket.emit('click')
 });

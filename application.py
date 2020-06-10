@@ -1,26 +1,26 @@
 from flask import Flask, request
-from flask_cors import CORS
 import json
 import pyautogui as p
+from flask_socketio import SocketIO, send
+import os
 
 app = Flask(__name__)
-CORS(app)
+# replace with any secret key
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY')
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # move handle
-@app.route('/move',methods=['POST'])
-def move():
-    data = json.loads(request.data.decode())
+@socketio.on('move')
+def move(data):
     x = data['x']
     y = data['y']
     p.moveTo(x,y)
-    return "good"
 
 # click handle
-@app.route('/click', methods=['POST'])
+@socketio.on('click')
 def click():
     p.click()
-    return "good"
 
 if __name__ == '__main__':
     print('started')
-    app.run(host='0.0.0.0',port=1717,debug=True)
+    socketio.run(app,host='0.0.0.0',port=1717)
