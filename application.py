@@ -8,12 +8,13 @@ app = Flask(__name__)
 # replace with any secret key
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY')
 socketio = SocketIO(app, cors_allowed_origins="*")
+p.FAILSAFE = False
 
 # move handle
 @socketio.on('move')
 def move(data):
-    x = data['x']
-    y = data['y']
+    x = data['changeX'] + p.position().x
+    y = data['changeY'] + p.position().y
     p.moveTo(x,y)
 
 # click handle
